@@ -66,6 +66,30 @@ def delete_note():
             return
     print("Заметка с указанным ID не найдена.")
 
+def search_notes_by_date():
+    notes = load_notes()
+    date_str = input("Введите дату для поиска заметок (в формате ГГГГ-ММ-ДД): ")
+    try:
+        search_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+    except ValueError:
+        print("Некорректный формат даты. Попробуйте еще раз.")
+        return
+    found_notes = []
+    for note in notes:
+        updated_at = datetime.datetime.strptime(note['updated_at'], "%Y-%m-%d %H:%M:%S").date()
+        if updated_at == search_date:
+            found_notes.append(note)
+    if found_notes:
+        print("Найдены заметки, отредактированные", search_date)
+        for note in found_notes:
+            print("ID:", note['id'])
+            print("Заголовок:", note['title'])
+            print("Текст:", note['body'])
+            print()
+    else:
+        print("Заметки, отредактированные", search_date, "не найдены.")    
+
+
 def main_menu():
     while True:
         print("==============================")
@@ -73,7 +97,8 @@ def main_menu():
         print("2. Добавить новую заметку")
         print("3. Редактировать заметку")
         print("4. Удалить заметку")
-        print("5. Выйти из приложения")
+        print("5. Искать заметки по дате")
+        print("6. Выйти из приложения")
         print("==============================")
         choice = input("Введите номер действия: ")
         if choice == '1':
@@ -86,6 +111,8 @@ def main_menu():
         elif choice == '4':
             delete_note()
         elif choice == '5':
+            search_notes_by_date()    
+        elif choice == '6':
             break
         else:
             print("Некорректный выбор.")
